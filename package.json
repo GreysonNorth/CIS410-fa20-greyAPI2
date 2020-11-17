@@ -1,0 +1,24 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mssql": "^6.2.3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/greysonnorth/cis410-fa20-north-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/greysonnorth/cis410-fa20-north-api/issues"
+  },
+  "homepage": "https://github.com/greysonnorth/cis410-fa20-north-api#readme",
+  "description": ""
+}
