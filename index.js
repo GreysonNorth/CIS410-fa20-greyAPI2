@@ -1,6 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 // const cors = require('cors')
 
 
@@ -19,9 +19,77 @@ FROM Request`
     res.send("hello world")
 })
 
+
+app.post('/students/login', async (req,res)=>{
+  console.log(req.body)
+ 
+  var email = req.body.email;
+  var password = req.body.password;
+
+  if(!email || !password){
+    return res.status(400).send('bad request')
+  }
+
+  //1. check that user email exists in db
+  var query = `SELECT *
+  FROM student
+  WHERE Email = '${email}'`
+
+  let result;
+
+  try{
+    result = await db.executeQuery(query);
+    }catch(myError){
+    console.log('error in /request/login:', myError);
+    return res.status(500).send()
+}
+
+  console.log(result)
+  if(!result[0]){return res.status(400).send('Invalid user credentials')}
+
+      //2. check their password
+
+      let user = result[0]
+      // console.log(user)
+  
+      if(!bcrypt.compareSync(password,user.Password)){
+          console.log("invalid password");
+          return res.status(400).send("Invalid user crendentials")
+      }
+  
+      //3. generate a token
+      let token = jwt.sign({pk: user.studentPK}, config.JWT, {expiresIn: '60 minutes'} )
+
+    console.log(token)
+
+    //4. save the token in db and send token and user info back to user
+    let setTokenQuery = `UPDATE student
+    SET Token = '${token}'
+    WHERE studentPK = ${user.studentPK}`
+
+    try{
+        await db.executeQuery(setTokenQuery)
+
+        res.status(200).send({
+            token: token,
+            user: {
+                NameFirst: user.NameFirst,
+                NameLast: user.NameLast,
+                Email: user.Email,
+                studentPK: user.studentPK
+            }
+        })
+    }
+    catch(myError){
+        console.log("error setting user token ", myError);
+        res.status(500).send()
+    }
+
+})
+
 app.post("/students", async (req, res)=> {
     // res.send("creating user")
-    console.log("request body", req.body)
+    // console.log("request body", req.body)
 
     var nameFirst = req.body.nameFirst;
     var nameLast = req.body.nameLast;
@@ -34,7 +102,7 @@ app.post("/students", async (req, res)=> {
 
     nameFirst = nameFirst.replace("'","''")
     nameLast = nameLast.replace("'","''")
-    
+
     var emailCheckQuery = `SELECT email
     FROM student
     WHERE email = '${email}'`
