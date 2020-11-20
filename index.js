@@ -1,13 +1,13 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-// const cors = require('cors')
+const cors = require('cors')
 
 
-
+//azurewebsite.et
 const app = express();
 app.use(express.json())
-// app.use(cors())
+app.use(cors())
 
 const db = require('./dbConnectExect.js');
 const config = require('./config.js')
@@ -174,7 +174,7 @@ app.get("/request",(rep, res)=>{
      })
 })
 
-app.listen(5000, ()=>{
-console.log("app is running on port 5000")
-})
+
+const PORT = process.env.PORT || 5000
+app.listen(PORT, ()=>{console.log(`app is running on port ${PORT}`)})
 

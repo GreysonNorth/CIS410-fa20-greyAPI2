@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/bfbff899-23ad-4c78-8e03-eb5797481b3c/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/fa20-CIS410-GreysonNORTH-api2",
+    "appService.deploySubpath": "."
+}
