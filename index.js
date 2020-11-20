@@ -11,7 +11,39 @@ app.use(express.json())
 
 const db = require('./dbConnectExect.js');
 const config = require('./config.js')
-// const auth = require('./middleware/authenticate')
+const auth = require('./middleware/authenticate')
+
+
+
+app.post("/submission", auth, async (req, res)=>{
+
+    try{
+        var requestFK = req.body.requestFK
+        var location = req.body.location
+        var workerFK = req.body.workerFK
+    
+        if(!requestFK || !location || !workerFK){res.status(400).send("bad request")}
+
+        summary = summary.replace("'", "'")
+            // res.send("here is your response")}
+
+            let insertQuery = `INSERT INTO submission(requestFK,workerFK,location)
+            OUTPUT inserted.submissionID, inserted.requestFK, inserted.workerFK, inserted.location
+            VALUES('${requestFK}', '${workerFK}', '${location}')`
+
+           let insertedSubmission = await db.executeQuery(insertQuery)
+
+           res.send(201).send(insertedSubmission[0])
+            }
+            catch(error){
+                res.status(500).send()
+            }
+    
+})
+
+app.get('/student/me', auth, (req, res)=>{
+res.send(req.student)
+})
 
 app.get("/test", (rep, res)=>{
     var query = `SELECT * 
@@ -20,7 +52,7 @@ FROM Request`
 })
 
 
-app.post('/students/login', async (req,res)=>{
+app.post('/student/login', async (req,res)=>{
   console.log(req.body)
  
   var email = req.body.email;
@@ -87,7 +119,7 @@ app.post('/students/login', async (req,res)=>{
 
 })
 
-app.post("/students", async (req, res)=> {
+app.post("/student", async (req, res)=> {
     // res.send("creating user")
     // console.log("request body", req.body)
 
