@@ -13,7 +13,26 @@ const db = require('./dbConnectExect.js');
 const config = require('./config.js')
 const auth = require('./middleware/authenticate')
 
+app.post('/student/logout', auth, (rep, res)=>{
+    var query = `UPDATE student
+    SET Token = NULL
+    WHERE studentPK = ${rep.student.studentPK}`
 
+    db.executeQuery(query).then(()=> {res.status(200).send()})
+    .catch((error)=>{console.log("error in POST /student/logout", error)
+    res.status(500).send()
+})
+})
+
+// app.get('/submission/me', auth, async(req, res)=>{
+//     let studentPK = req.student.studentPK
+
+// })
+
+// app.patch("/submission/:pk", auth, async(req, res)=>{
+//     let submissionPK = req.params.pk
+// })
+app.get("/", (req, res)=>{res.send("Hello World.")})
 
 app.post("/submission", auth, async (req, res)=>{
 
