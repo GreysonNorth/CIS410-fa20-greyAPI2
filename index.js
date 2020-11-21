@@ -85,13 +85,14 @@ app.post('/student/login', async (req,res)=>{
   var query = `SELECT *
   FROM student
   WHERE Email = '${email}'`
+console.log(query)
 
   let result;
 
   try{
     result = await db.executeQuery(query);
     }catch(myError){
-    console.log('error in /request/login:', myError);
+    console.log('error in /student/login:', myError);
     return res.status(500).send()
 }
 
@@ -109,14 +110,14 @@ app.post('/student/login', async (req,res)=>{
       }
   
       //3. generate a token
-      let token = jwt.sign({pk: user.studentPK}, config.JWT, {expiresIn: '60 minutes'} )
+      let token = jwt.sign({pk: user.StudentPK}, config.JWT, {expiresIn: '60 minutes'} )
 
     console.log(token)
 
     //4. save the token in db and send token and user info back to user
     let setTokenQuery = `UPDATE student
     SET Token = '${token}'
-    WHERE studentPK = ${user.studentPK}`
+    WHERE studentPK = ${user.StudentPK}`
 
     try{
         await db.executeQuery(setTokenQuery)
@@ -127,7 +128,7 @@ app.post('/student/login', async (req,res)=>{
                 NameFirst: user.NameFirst,
                 NameLast: user.NameLast,
                 Email: user.Email,
-                studentPK: user.studentPK
+                studentPK: user.StudentPK
             }
         })
     }
@@ -193,6 +194,26 @@ app.get("/request",(rep, res)=>{
      })
 })
 
+app.get("/request/:pk", (req, res)=> {
+    var pk = req.params.pk
+
+    var myQuery = `SELECT *
+    FROM Request
+    LEFT JOIN student
+    ON student.StudentPK = Request.studentFK
+    WHERE RequestPK = ${pk}`
+
+    db.executeQuery(myQuery).then((requests)=>{
+        if(requests[0]){
+            res.send(requests[0])
+        }else{res.status(404).send('bad request')}
+    })
+    .catch((err)=>{
+        console.log("Error in /request/pk", err)
+        res.status(500).send()
+    })
+
+})
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, ()=>{console.log(`app is running on port ${PORT}`)})
