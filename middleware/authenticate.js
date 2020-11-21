@@ -16,17 +16,17 @@ const auth = async(req, res, next)=>{
          let decodedToken = jwt.verify(myToken, config.JWT)
          // console.log(decodedToken)
  
-         let studentPK = decodedToken.pk;
+         let StudentPK = decodedToken.pk;
         //  console.log(studentPK)
  
  
          //2. compare token with db token
-         let query = `SELECT studentPK, NameFirst, NameLast, Email
+         let query = `SELECT StudentPK, NameFirst, NameLast, Email
          FROM student
-         WHERE studentPK = ${studentPK} and Token = '${myToken}'`
+         WHERE StudentPK = ${studentPK} and Token = ${myToken}`
  
          let returnedUser = await db.executeQuery(query)
-         // console.log(returnedUser)
+        //  console.log(returnedUser)
          //3. save user information in request
          if(returnedUser[0]){
              req.student = returnedUser[0];

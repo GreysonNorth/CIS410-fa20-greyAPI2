@@ -24,10 +24,15 @@ app.post('/student/logout', auth, (rep, res)=>{
 })
 })
 
-// app.get('/submission/me', auth, async(req, res)=>{
-//     let studentPK = req.student.studentPK
 
-// })
+
+app.get('/submission/me', auth, async(req, res)=>{
+    res.send(req.student)
+})
+
+
+
+
 
 // app.patch("/submission/:pk", auth, async(req, res)=>{
 //     let submissionPK = req.params.pk
@@ -139,7 +144,7 @@ console.log(query)
 
 })
 
-app.post("/student", async (req, res)=> {
+app.post("/students", async (req, res)=> {
     // res.send("creating user")
     // console.log("request body", req.body)
 
